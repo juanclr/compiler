@@ -1,0 +1,81 @@
+/*--------------- 1ra Area: Codigo de Usuario -----------------------*/
+//-------> importaciones, paquetes
+package Analizadores;
+import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+
+//------> Codigo para el parser,variables, metodos
+parser code
+{:
+    public String resultado="";
+    public static LinkedList<TError> TablaES = new LinkedList<TError>(); 
+
+    //Metodo al que se llama automaticamente ante algun error sintactico
+    public void syntax_error(Symbol s)
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("!Error Sintactico Recuperado!");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);
+
+        TError datos = new TError(lexema,fila,columna,"Error Sintactico","Caracter no esperado");
+        TablaES.add(datos);
+       
+        
+    }
+
+    //Metodo al que se llama en el momento en que ya no es posible una recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("!!!!!!! Error Sintactico, Panic Mode !!!!!!! ");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);
+        
+        TError datos = new TError(lexema,fila,columna,"Error Sintactico","Caracter no esperado");
+        TablaES.add(datos);
+     
+    }
+:}
+
+//------> Codigo para las acciones gramaticales
+action code
+{:
+:}
+
+/*--------------- 2da Area: Declaraciones -----------------------*/
+//------> declaracion de terminales 
+terminal mas,menos,por,div,para,parc,puntocoma,LBRACK,RBRACK,LBRACE,RBRACE,EQ,GT,LT,NOT,EQEQ,LTEQ;
+terminal GTEQ,NOTEQ,ANDAND,OROR,decimal,letra,palabra,exp,ident;
+terminal String num, letr;
+terminal BOOLEAN_LITERAL,DOUBLE,CHAR,IF,ELSE,END,WHILE,FOR,BREAK,CLASS,CASE;
+
+
+//------> declaracion de no terminales
+non terminal String INICIO, E, ;
+
+//----> precedencia de menor a mayor 
+precedence left mas, menos;
+precedence left por, div;
+
+start with INICIO;
+
+
+/*--------------- 3ra Area: Reglas Semanticas -----------------------*/
+INICIO::=Exp:a puntocoma {: resultado=a; :};
+
+
+Exp::= letr:a      {:RESULT = a;:};
+Stmt ::= Exp:a | IfStmt:a | WhileStmt:a | ForStmt:a ;
+IfStmt ::= IF para Stmt:a parc ELSE Stmt:b ;
+
+
+
