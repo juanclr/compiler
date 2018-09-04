@@ -8,17 +8,45 @@ package Analizadores;
 /** CUP generated class containing symbol constants. */
 public class Simbolos {
   /* terminals */
-  public static final int div = 5;
-  public static final int puntocoma = 8;
-  public static final int letr = 10;
-  public static final int num = 9;
-  public static final int EOF = 0;
+  public static final int GTEQ = 27;
+  public static final int LTEQ = 18;
+  public static final int CASE = 26;
+  public static final int FOR = 23;
+  public static final int OROR = 30;
+  public static final int NOT = 16;
+  public static final int LT = 15;
+  public static final int CLASS = 25;
+  public static final int ANDAND = 29;
+  public static final int IF = 19;
   public static final int menos = 3;
-  public static final int error = 1;
-  public static final int por = 4;
+  public static final int EOF = 0;
+  public static final int ident = 33;
   public static final int parc = 7;
   public static final int mas = 2;
   public static final int para = 6;
+  public static final int error = 1;
+  public static final int EQEQ = 17;
+  public static final int letr = 37;
+  public static final int BREAK = 24;
+  public static final int por = 4;
+  public static final int EQ = 13;
+  public static final int SWITCH = 36;
+  public static final int LBRACK = 9;
+  public static final int LBRACE = 11;
+  public static final int ELSE = 20;
+  public static final int RBRACK = 10;
+  public static final int WHILE = 22;
+  public static final int RBRACE = 12;
+  public static final int puntocoma = 8;
+  public static final int END = 21;
+  public static final int div = 5;
+  public static final int num = 35;
+  public static final int GT = 14;
+  public static final int strng = 38;
+  public static final int exp = 32;
+  public static final int decimal = 31;
+  public static final int PRINT = 34;
+  public static final int NOTEQ = 28;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -29,8 +57,36 @@ public class Simbolos {
   "para",
   "parc",
   "puntocoma",
+  "LBRACK",
+  "RBRACK",
+  "LBRACE",
+  "RBRACE",
+  "EQ",
+  "GT",
+  "LT",
+  "NOT",
+  "EQEQ",
+  "LTEQ",
+  "IF",
+  "ELSE",
+  "END",
+  "WHILE",
+  "FOR",
+  "BREAK",
+  "CLASS",
+  "CASE",
+  "GTEQ",
+  "NOTEQ",
+  "ANDAND",
+  "OROR",
+  "decimal",
+  "exp",
+  "ident",
+  "PRINT",
   "num",
-  "letr"
+  "SWITCH",
+  "letr",
+  "strng"
   };
 }
 

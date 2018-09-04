@@ -8,12 +8,12 @@ import java.util.LinkedList;
 %%
 %{
     //----> Codigo de usuario en sintaxis java
-    public static LinkedList<TError> TablaEL = new LinkedList<TError>(); 
+    public static LinkedList<TError> TablaEL = new LinkedList<TError>();
 
 %}
 
 //-------> Directivas de JFlex
-%public 
+%public
 %class Analizador_Lexico
 %cupsym Simbolos
 %cup
@@ -51,16 +51,16 @@ Ident = [A-Za-z_$] [A-Za-z_$0-9]*
 <YYINITIAL> "-"         { System.out.println("Reconocio "+yytext()+" menos"); return new Symbol(Simbolos.menos, yycolumn, yyline, yytext()); }
 <YYINITIAL> "*"         { System.out.println("Reconocio "+yytext()+" por"); return new Symbol(Simbolos.por, yycolumn, yyline, yytext()); }
 <YYINITIAL> "/"         { System.out.println("Reconocio "+yytext()+" div"); return new Symbol(Simbolos.div, yycolumn, yyline, yytext()); }
-<YYINITIAL> "="         { return Symbol(Simbolos.EQ); }
-<YYINITIAL> ">"         { return Symbol(Simbolos.GT); }
-<YYINITIAL> "<"         { return Symbol(Simbolos.LT); }
-<YYINITIAL> "!"         { return Symbol(Simbolos.NOT); }
-<YYINITIAL> "=="        { return Symbol(Simbolos.EQEQ); }
-<YYINITIAL> "<="        { return Symbol(Simbolos.LTEQ); }
-<YYINITIAL> ">="        { return Symbol(Simbolos.GTEQ); }
-<YYINITIAL> "!="        { return Symbol(Simbolos.NOTEQ); }
-<YYINITIAL> "&&"        { return Symbol(Simbolos.ANDAND); }
-<YYINITIAL> "||"        { return Symbol(Simbolos.OROR); }
+<YYINITIAL> "="         { return new Symbol(Simbolos.EQ); }
+<YYINITIAL> ">"         { return new Symbol(Simbolos.GT); }
+<YYINITIAL> "<"         { return new Symbol(Simbolos.LT); }
+<YYINITIAL> "!"         { return new Symbol(Simbolos.NOT); }
+<YYINITIAL> "=="        { return new Symbol(Simbolos.EQEQ); }
+<YYINITIAL> "<="        { return new Symbol(Simbolos.LTEQ); }
+<YYINITIAL> ">="        { return new Symbol(Simbolos.GTEQ); }
+<YYINITIAL> "!="        { return new Symbol(Simbolos.NOTEQ); }
+<YYINITIAL> "&&"        { return new Symbol(Simbolos.ANDAND); }
+<YYINITIAL> "||"        { return new Symbol(Simbolos.OROR); }
 
 
 
@@ -68,36 +68,37 @@ Ident = [A-Za-z_$] [A-Za-z_$0-9]*
 <YYINITIAL> "("         { System.out.println("Reconocio "+yytext()+" para"); return new Symbol(Simbolos.para, yycolumn, yyline, yytext()); }
 <YYINITIAL> ")"         { System.out.println("Reconocio "+yytext()+" parc"); return new Symbol(Simbolos.parc, yycolumn, yyline, yytext()); }
 <YYINITIAL> ";"         { System.out.println("Reconocio "+yytext()+" puntocoma"); return new Symbol(Simbolos.puntocoma, yycolumn, yyline, yytext()); }
-<YYINITIAL> "["         { return Symbol(Simbolos.LBRACK); }
-<YYINITIAL> "]"         { return Symbol(Simbolos.RBRACK); }
-<YYINITIAL> "{"         { return Symbol(Simbolos.LBRACE); }
-<YYINITIAL> "}"         { return Symbol(Simbolos.RBRACE); }
-  
+<YYINITIAL> "["         { return new Symbol(Simbolos.LBRACK); }
+<YYINITIAL> "]"         { return new Symbol(Simbolos.RBRACK); }
+<YYINITIAL> "{"         { return new Symbol(Simbolos.LBRACE); }
+<YYINITIAL> "}"         { return new Symbol(Simbolos.RBRACE); }
+
 
 //-------> Simbolos ER
 /* keywords */
-<YYINITIAL> "boolean"   { return Symbol(Simbolos.BOOLEAN); }
-<YYINITIAL> "double"    { return Symbol(Simbolos.DOUBLE); }
-<YYINITIAL> "char"      { return Symbol(Simbolos.CHAR); }
-<YYINITIAL> "else"      { return Symbol(Simbolos.ELSE); }
-<YYINITIAL> "if"        { return Symbol(Simbolos.IF); }
-<YYINITIAL> "switch"    { return Symbol(Simbolos.SWITCH); }
-<YYINITIAL> "for"       { return Symbol(Simbolos.FOR); }
-<YYINITIAL> "break"     { return Symbol(Simbolos.BREAK); }
-<YYINITIAL> "class"     { return Symbol(Simbolos.CLASS); }
-<YYINITIAL> "case"      { return Symbol(Simbolos.CASE); }
+//<YYINITIAL> "boolean"   { return new Symbol(Simbolos.BOOLEAN); }
+//<YYINITIAL> "double"    { return new Symbol(Simbolos.DOUBLE); }
+//<YYINITIAL> "char"      { return new Symbol(Simbolos.CHAR); }
+<YYINITIAL> "else"      { return new Symbol(Simbolos.ELSE); }
+<YYINITIAL> "if"        { return new Symbol(Simbolos.IF); }
+<YYINITIAL> "switch"    { return new Symbol(Simbolos.SWITCH); }
+<YYINITIAL> "for"       { return new Symbol(Simbolos.FOR); }
+<YYINITIAL> "break"     { return new Symbol(Simbolos.BREAK); }
+<YYINITIAL> "class"     { return new Symbol(Simbolos.CLASS); }
+<YYINITIAL> "case"      { return new Symbol(Simbolos.CASE); }
+<YYINITIAL> "print"     { return new Symbol(Simbolos.PRINT); }
 
 
  /* boolean literals */
- "true"                { return Symbol(Simbolos.BOOLEAN_LITERAL, true); }
- "false"               { return Symbol(Simbolos.BOOLEAN_LITERAL, false); }
+ //"true"                { return new Symbol(Simbolos.BOOLEAN_LITERAL, true); }
+ //"false"               { return new Symbol(Simbolos.BOOLEAN_LITERAL, false); }
 
 
 
-<YYINITIAL> {Double}    { System.out.println("Reconocio "+yytext()+" decimal"); return Symbol(Simbolos.double); }
+//<YYINITIAL> {Double}    { System.out.println("Reconocio "+yytext()+" decimal"); return new Symbol(Simbolos.double); }
 <YYINITIAL> {Int}       { System.out.println("Reconocio "+yytext()+" num"); return new Symbol(Simbolos.num, yycolumn, yyline, yytext()); }
 <YYINITIAL> {Letter}    { System.out.println("Reconocio "+yytext()+" letra"); return new Symbol(Simbolos.letr, yycolumn, yyline, yytext());}
-<YYINITIAL> {Word}      { System.out.println("Reconocio "+yytext()+" palabra"); return new Symbol(Simbolos.string, yycolumn, yyline, yytext());}
+<YYINITIAL> {Word}    { System.out.println("Reconocio "+yytext()+" palabra"); return new Symbol(Simbolos.strng, yycolumn, yyline, yytext());}
 <YYINITIAL> {Exponent}  { System.out.println("Reconocio "+yytext()+" exp");return new Symbol(Simbolos.exp, yycolumn, yyline, yytext());}
 <YYINITIAL> {Ident}     { System.out.println("Reconocio "+yytext()+" identifier");return new Symbol(Simbolos.ident, yycolumn, yyline, yytext());}
 
@@ -121,4 +122,4 @@ Ident = [A-Za-z_$] [A-Za-z_$0-9]*
                           TError datos = new TError(yytext(),yyline,yycolumn,"Error Lexico","Simbolo no existe en el lenguaje");
                           TablaEL.add(datos);}
 
-
+ 
