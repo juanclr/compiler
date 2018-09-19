@@ -2,17 +2,15 @@
 //-------> importaciones, paquetes
 package Analizadores;
 import java_cup.runtime.Symbol;
-import java.util.LinkedList;
+//import java.util.LinkedList;
 
 //------> Codigo para el parser,variables, metodos
 parser code
 {:
-    public String resultado="";
-    public static LinkedList<TError> TablaES = new LinkedList<TError>();
+
 
     //Metodo al que se llama automaticamente ante algun error sintactico
-    public void syntax_error(Symbol s)
-    {
+    public void syntax_error(Symbol s){
         String lexema = s.value.toString();
         int fila = s.right;
         int columna = s.left;
@@ -22,15 +20,11 @@ parser code
         System.out.println("\t\tFila: "+fila);
         System.out.println("\t\tColumna: "+columna);
 
-        TError datos = new TError(lexema,fila,columna,"Error Sintactico","Caracter no esperado");
-        TablaES.add(datos);
-
-
     }
 
     //Metodo al que se llama en el momento en que ya no es posible una recuperacion de errores
-    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
-    {
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+
         String lexema = s.value.toString();
         int fila = s.right;
         int columna = s.left;
@@ -39,9 +33,6 @@ parser code
         System.out.println("\t\tLexema: "+lexema);
         System.out.println("\t\tFila: "+fila);
         System.out.println("\t\tColumna: "+columna);
-
-        TError datos = new TError(lexema,fila,columna,"Error Sintactico","Caracter no esperado");
-        TablaES.add(datos);
 
     }
 :}
@@ -53,41 +44,88 @@ action code
 
 /*--------------- 2da Area: Declaraciones -----------------------*/
 //------> declaracion de terminales
-terminal        mas,menos,por,div,para,parc,puntocoma,LBRACK,RBRACK,LBRACE,RBRACE,EQ,GT,LT,NOT,EQEQ,LTEQ,IF,ELSE,END,WHILE,FOR,BREAK,CLASS,CASE;
-terminal        GTEQ,NOTEQ,ANDAND,OROR,decimal,exp,ident,PRINT, num, SWITCH;
-terminal String letr,strng;
-//terminal palabra,CHAR;
-//terminal num, DOUBLE;
-//terminal BOOLEAN_LITERAL;
+terminal PLUS, MINUS, TIMES, DIV, EQ;
+terminal PARA, PARC, PUNTOCOMA, LBRACE, RBRACE, DBLPUNTO;
+terminal IF, ELSE, SWITCH, FOR, BREAK, PRINT, WHILE, CLASS;
+terminal String LETTER, STRGN, IDNT;
+terminal Integer DOUBL, NUM;
+terminal INTG, STRG, DOBL, CLSIDNT;
+
+
 
 
 //------> declaracion de no terminales
-non terminal String INICIO, Expr,IfStmt,PrintStmt,Stmt;
+non terminal Declaration, VaribleDecl, FunctionDecl, ClassDecl, TypeIdnt;
+non terminal INICIO, Expr, Bin_op, Stmt, Oper, IfStmt, IfElseStmt, PrintStmt, PosbBlank;
 
 //----> precedencia de menor a mayor
-precedence left mas, menos;
-precedence left por, div;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIV;
 
 start with INICIO;
 
 
 /*--------------- 3ra Area: Reglas Semanticas -----------------------*/
-INICIO::=Expr:a puntocoma {: resultado=a; :};
+INICIO::= Expr;
 
 
-Expr::=strng:a      {:RESULT = a;:};
+Declaration::= VaribleDecl | ClassDecl| FunctionDecl;
 
-/* Expr::=palabra
-      |Expr bin_op Expr
-      |menos expr
-      |para expr parc; */
-
-//bin_op::=  mas | menos | por | div;
-
-//IfStmt::= IF para Expr parc LBRACE Stmt RBRACE ELSE LBRACE Stmt RBRACE;
-
-//PrintStmt::= PRINT para Expr parc;
+ClassDecl::=  CLASS CLSIDNT DBLPUNTO
+            | CLASS CLSIDNT DBLPUNTO ClassDecl;
 
 
+VariableDecl::= TypeIdnt IDNT EQ PUNTOCOMA;
 
-//Stmt::= Expr | IfStmt | PrintStmt;
+TypeIdnt::=   INTG
+            | STRG
+            | DOBL;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+Stmt::=   IfStmt
+        | PrintStmt;
+
+Bin_op::=   PLUS
+          | MINUS
+          | TIMES
+          | DIV;
+
+Expr::=   Stmt
+        | Oper
+        | LETTER
+        | STRGN
+        | MINUS Expr
+        | PARA Expr PARC;
+
+PosbBlank::=
+            | Expr;
+
+Oper::=   NUM
+        | DOUBL
+        | NUM Bin_op NUM;
+
+IfStmt::= IF PARA Expr PARC DBLPUNTO PosbBlank
+        | IF PARA error
+            {: System.out.println("----Error por Expresion faltante"); :}
+            PARC DBLPUNTO PosbBlank;
+
+
+PrintStmt::=  PRINT PARA PosbBlank PARC PUNTOCOMA
+            | PRINT PARA PosbBlank PARC error:e {:System.out.println("Falta Puntocoma");:};
+
+*/
