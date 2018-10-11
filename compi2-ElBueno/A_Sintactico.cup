@@ -1,0 +1,239 @@
+/*--------------- 1ra Area: Codigo de Usuario -----------------------*/
+//-------> importaciones, paquetes
+package Analizadores;
+import java_cup.runtime.Symbol;
+//import java.util.LinkedList;
+
+//------> Codigo para el parser,variables, metodos
+parser code
+{:
+
+
+    //Metodo al que se llama automaticamente ante algun error sintactico
+    public void syntax_error(Symbol s){
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+
+        System.out.println("!Error Sintactico Recuperado!");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);
+
+    }
+
+    //Metodo al que se llama en el momento en que ya no es posible una recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+
+        System.out.println("!!!!!!! Error Sintactico, Panic Mode !!!!!!! ");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);
+
+    }
+:}
+
+//------> Codigo para las acciones gramaticales
+action code
+{:
+:}
+
+/*--------------- 2da Area: Declaraciones -----------------------*/
+//------> declaracion de terminales
+terminal PLUS, MINUS, TIMES, DIV, EQ, PEQ, LEQ, NEG;
+terminal LT, GT, EQEQ, LTEQ, GTEQ, NOTEQ, ANDAND, OROR;
+terminal PARA, PARC, PUNTOCOMA, OBRACE, CBRACE, OBRACK, CBRACK, DBLPUNTO, COMA;
+terminal IF, ELSE, FOR, BREAK, PRINT, CLASS, PRGRM, FUNC, CNT;
+terminal IDNT, BOOLEAN, VOID, INTG, TRT, FLS, MAIN, RTN, HEX, CLL;
+terminal String LETTER, STRGN;
+terminal Integer NUM;
+
+
+
+
+//------> declaracion de no terminales
+non terminal VariableDecl, FunctionDecl, ClassDecl, Type, Body, FieldDecl, IdntDecl;
+non terminal ParamDecl, Main, TypeMeth, Decls, Block, LiteralTxt, Chars_literal;
+non terminal INICIO, Expr, Stmt, Oper, IfStmt, ElseStmt, PrintStmt, PosbBlank, ForStmt, ReturnStmt;
+non terminal Method_call, Method_name, Method_expr, Method_expr2, Location, Callout_arg;
+non terminal Bin_op, Assig_op, Arit_op, Rel_op, Eq_op, Cond_op, Literals, Int_literal, Bool_literal;
+
+//----> precedencia de menor a mayor
+precedence left PLUS, MINUS;
+precedence left TIMES, DIV;
+
+start with INICIO;
+
+/*--------------- 3ra Area: Reglas Semanticas -----------------------*/
+INICIO::= ClassDecl;
+
+ClassDecl::=  CLASS PRGRM OBRACE Main Body CBRACE
+            | CLASS PRGRM OBRACE Main CBRACE;
+
+Main::= MAIN PARA PARC OBRACE Block CBRACE;
+
+Body::=   FieldDecl Body 
+        | FunctionDecl Body
+        | FieldDecl 
+        | FunctionDecl;
+
+
+VariableDecl::=   INTG IDNT Assig_op NUM PUNTOCOMA
+                | BOOLEAN IDNT EQ TRT PUNTOCOMA
+                | BOOLEAN IDNT EQ FLS PUNTOCOMA
+                | BOOLEAN IDNT EQ error {:System.out.println("--Valor asignado NO Booleano");:} PUNTOCOMA
+                | INTG IDNT Assig_op error {:System.out.println("--Valor asignado NO Entero");:} PUNTOCOMA;
+
+
+FieldDecl::=  Type IDNT IdntDecl PUNTOCOMA
+            | Type IDNT OBRACK NUM CBRACK IdntDecl PUNTOCOMA
+            | Type IDNT PUNTOCOMA
+            | Type IDNT OBRACK NUM CBRACK PUNTOCOMA;
+            
+
+IdntDecl::=   COMA IDNT OBRACK NUM CBRACK IdntDecl
+            | COMA IDNT IdntDecl
+            | COMA IDNT
+            | COMA IDNT OBRACK NUM CBRACK;
+
+
+Block::=  VariableDecl Block
+        | Stmt Block
+        | VariableDecl
+        | Stmt;
+
+Stmt::=   PrintStmt
+        | IfStmt
+        | ForStmt
+        | ReturnStmt
+        | Method_call
+        | BREAK PUNTOCOMA
+        | CNT PUNTOCOMA;
+
+
+ReturnStmt::= RTN PUNTOCOMA
+            | RTN Expr PUNTOCOMA
+            | RTN Expr error {:System.out.println("---Falta Punto y Coma ");:}
+            | RTN error {:System.out.println("---Falta Punto y Coma ");:};
+
+PrintStmt::=  PRINT PARA PosbBlank PARC PUNTOCOMA
+            | PRINT PARA PosbBlank PARC error {:System.out.println("Falta Puntocoma");:};
+
+IfStmt::= IF PARA Expr PARC OBRACE Block CBRACE ELSE OBRACE Block CBRACE
+        | IF PARA Expr PARC OBRACE Block CBRACE
+        | IF PARA error
+            {: System.out.println("----Error en Expresion"); :}
+             PARC OBRACE Block CBRACE;
+
+ElseStmt::= ELSE OBRACE Block CBRACE;
+
+ForStmt::= FOR IDNT EQ Expr COMA Expr OBRACE Block CBRACE;
+
+PosbBlank::=
+            | STRGN
+            | LETTER;
+
+Location::=   IDNT
+            | IDNT OBRACK Expr CBRACK;
+
+Method_call::=    Method_name PARA Method_expr PARC PUNTOCOMA
+                | Method_name PARA PARC PUNTOCOMA
+                | CLL PARA STRGN  Callout_arg  PARC
+                | CLL PARA STRGN PARC;
+
+Callout_arg::=    COMA Expr Callout_arg
+                | COMA Expr;
+ 
+Method_name::= IDNT;
+
+Method_expr::= Expr Method_expr2
+            | Expr; 
+            
+
+Method_expr2::=   COMA Expr Method_expr2
+                | COMA Expr;
+
+
+Expr::=   Expr Bin_op Expr
+        | PARA Expr PARC
+        | MINUS Expr 
+        | NEG Expr
+        | Location
+        | Literals;
+
+Assig_op::=   EQ
+            | PEQ
+            | LEQ;
+
+Bin_op::=  PLUS
+          | MINUS
+          | TIMES
+          | DIV;
+
+Literals::=   Bool_literal
+            | Chars_literal
+            | Int_literal;
+
+Int_literal::=    NUM
+                | HEX;
+               
+
+Chars_literal::= STRGN
+               | LETTER;
+
+
+Bool_literal::=   TRT
+                | FLS;
+
+
+FunctionDecl::=   FUNC TypeMeth IDNT PARA PARC OBRACE Block CBRACE
+                | FUNC TypeMeth IDNT PARA ParamDecl PARC OBRACE Block CBRACE;
+
+
+ParamDecl::=  Type IDNT
+            | Type IDNT COMA ParamDecl;
+
+TypeMeth::=   VOID
+            | Type;
+
+Type::=   INTG
+        | BOOLEAN;
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+Bin_op::=     Arit_op 
+            | Rel_op
+            | Eq_op
+            | Cond_op;
+
+Arit_op::=  PLUS
+          | MINUS
+          | TIMES
+          | DIV;
+
+Rel_op::=     LT
+            | GT
+            | LTEQ
+            | GTEQ;
+
+Eq_op::=      EQEQ
+            | NOTEQ;
+
+Cond_op::=    ANDAND
+            | OROR;
+
+*/
