@@ -26,7 +26,7 @@ import java.util.LinkedList;
 //------> Expresiones Regulares
 
 Letter = "'"[A-Za-z]"'"
-Word = "'"[A-Za-z0-9_] "'"
+Word = "'"[A-Za-z]+[0-9]* "'"
 Entero = 0 | [1-9][0-9]*
 Decimal = [0-9]+ \. [0-9]+
 Ident = [A-Za-z_$][A-Za-z_$0-9]*
